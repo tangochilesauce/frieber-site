@@ -32,15 +32,8 @@
       min-height: 100dvh;
     }
 
-    .layout {
-      display: flex;
-      gap: 4rem;
+    .page {
       padding: 3rem 2rem;
-    }
-
-    .col {
-      flex: 1;
-      min-width: 0;
     }
 
     /* ── Pixel Logo ── */
@@ -75,24 +68,22 @@
 
     #sampler { display: none; }
 
-    /* ── Content ── */
+    /* ── Rows ── */
 
-    .section-label {
-      margin-top: 2.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .projects {
-      list-style: none;
+    .row {
+      display: flex;
+      gap: 4rem;
       margin-bottom: 2.5rem;
     }
 
-    .projects li {
-      margin-bottom: 0.25rem;
+    .left {
+      flex: 0 0 auto;
+      width: 280px;
     }
 
-    .previously {
-      margin-bottom: 2.5rem;
+    .right {
+      flex: 1;
+      min-width: 0;
     }
 
     /* ── Links ── */
@@ -107,20 +98,30 @@
       opacity: 0.5;
     }
 
-    /* ── Right Column ── */
-
-    .desc {
-      margin-top: 1rem;
-      margin-bottom: 2rem;
-    }
-
     .links {
       list-style: none;
-      margin-top: 0.25rem;
     }
 
     .links li {
       margin-bottom: 0.25rem;
+    }
+
+    /* ── Projects ── */
+
+    .project-row {
+      display: flex;
+      gap: 4rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .project-row .left {
+      flex: 0 0 auto;
+      width: 280px;
+    }
+
+    .project-row .right {
+      flex: 1;
+      min-width: 0;
     }
 
     /* ── Entrance ── */
@@ -134,57 +135,81 @@
     .a1 { animation-delay: 0.6s; }
     .a2 { animation-delay: 0.75s; }
     .a3 { animation-delay: 0.9s; }
+    .a4 { animation-delay: 1.05s; }
 
     @media (max-width: 640px) {
-      .layout { flex-direction: column; gap: 3rem; }
       html { font-size: 12px; }
-      .layout { padding: 2rem 1.5rem; }
+      .page { padding: 2rem 1.5rem; }
       .logo-wrap { height: 60px; }
+      .row, .project-row { flex-direction: column; gap: 0.25rem; }
+      .left { width: auto; }
+      .project-row { margin-bottom: 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <div class="layout">
+  <main class="page">
 
-    <main class="col">
-      <div class="logo-wrap">
-        <div id="pixel-logo"></div>
+    <div class="logo-wrap">
+      <div id="pixel-logo"></div>
+    </div>
+
+    <canvas id="sampler"></canvas>
+    <img id="logo-src" src="logo.jpg" alt="" crossorigin="anonymous" style="display:none">
+
+    <div class="row a a1">
+      <div class="left">Dan Frieber</div>
+      <div class="right">Serial Mastery</div>
+    </div>
+
+    <div class="row a a1">
+      <div class="left"></div>
+      <div class="right">Creative strategy, design, design systems, physical and digital product design & development, AI product development & shipping, music, fine art, etc. etc.</div>
+    </div>
+
+    <div class="row a a2">
+      <div class="left">Currently working on:</div>
+      <div class="right"></div>
+    </div>
+
+    <div class="project-row a a2">
+      <div class="left"><a href="https://tangochilesauce.com" target="_blank" rel="noopener">Tango Chile Sauce</a></div>
+      <div class="right">Premium hot sauce in Whole Foods, Amazon, and expanding into Costco</div>
+    </div>
+
+    <div class="project-row a a2">
+      <div class="left"><a href="#">FFEEDD</a></div>
+      <div class="right">The simplest food tracker that people actually use</div>
+    </div>
+
+    <div class="project-row a a2">
+      <div class="left"><a href="#">Madder</a></div>
+      <div class="right">New music — singles and an EP dropping 2026</div>
+    </div>
+
+    <div class="project-row a a2">
+      <div class="left"><a href="#">Dream Beds</a></div>
+      <div class="right">Relaxing bed videos on YouTube</div>
+    </div>
+
+    <div class="row a a3">
+      <div class="left">Previously:</div>
+      <div class="right">Food Network Chopped, HBO High Maintenance, Cleanmarket x Equinox, Whole Foods NYC, Chamusca NYC</div>
+    </div>
+
+    <div class="row a a4">
+      <div class="left"></div>
+      <div class="right">
+        <ul class="links">
+          <li><a href="https://instagram.com/frieber" target="_blank" rel="noopener">@frieber</a></li>
+          <li><a href="https://linkedin.com/in/danfrieber" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href="#" target="_blank" rel="noopener">YouTube</a></li>
+          <li><a href="mailto:dan@frieber.com">dan@frieber.com</a></li>
+        </ul>
       </div>
+    </div>
 
-      <canvas id="sampler"></canvas>
-      <img id="logo-src" src="logo.jpg" alt="" crossorigin="anonymous" style="display:none">
-
-      <p class="a a1">Dan Frieber</p>
-      <p class="a a1">Serial Mastery</p>
-
-      <p class="section-label a a1">Currently working on:</p>
-
-      <ul class="projects a a1">
-        <li><a href="https://tangochilesauce.com" target="_blank" rel="noopener">Tango Chile Sauce</a></li>
-        <li><a href="#">FFEEDD</a></li>
-        <li><a href="#">Madder</a></li>
-        <li><a href="#">Dream Beds</a></li>
-      </ul>
-
-      <p class="previously a a2">Previously: Food Network Chopped, HBO High Maintenance, Cleanmarket x Equinox, Whole Foods NYC, Chamusca NYC</p>
-
-      <div class="a a3">
-        <a href="mailto:dan@frieber.com">dan@frieber.com</a>
-      </div>
-    </main>
-
-    <aside class="col a a2">
-      <p>Dan Frieber</p>
-      <p>Serial Mastery</p>
-      <p class="desc">Creative strategy, design, design systems, physical and digital product design & development, AI product development & shipping, music, fine art, etc. etc.</p>
-      <ul class="links">
-        <li><a href="https://instagram.com/frieber" target="_blank" rel="noopener">@frieber</a></li>
-        <li><a href="https://linkedin.com/in/danfrieber" target="_blank" rel="noopener">LinkedIn</a></li>
-        <li><a href="#" target="_blank" rel="noopener">YouTube</a></li>
-      </ul>
-    </aside>
-
-  </div>
+  </main>
 
   <script>
     const img = document.getElementById('logo-src');
