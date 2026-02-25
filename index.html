@@ -4,18 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dan Frieber</title>
-  <meta name="description" content="Dan Frieber — hot sauce, music, apps, and whatever else sounds interesting.">
+  <meta name="description" content="Dan Frieber — Serial Mastery. Design, music, hot sauce, apps, and whatever else sounds interesting.">
+  <meta name="theme-color" content="#0044aa">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
     :root {
-      --bg: #fafafa;
-      --text: #1a1a1a;
-      --muted: #888;
-      --light: #ccc;
+      --bg: #0044aa;
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.55);
+      --dim: rgba(255,255,255,0.3);
+      --rule: rgba(255,255,255,0.15);
     }
 
     html {
@@ -27,7 +29,7 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'IBM Plex Mono', monospace;
       font-weight: 400;
       line-height: 1.6;
       min-height: 100dvh;
@@ -59,7 +61,7 @@
       width: var(--size);
       height: var(--size);
       background: var(--text);
-      border-radius: 1px;
+      border-radius: 0;
       opacity: 0;
       transform: translate(var(--sx), var(--sy)) scale(0);
       transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
@@ -80,8 +82,8 @@
     .tagline {
       font-size: 1.15rem;
       font-weight: 400;
-      letter-spacing: 0.01em;
-      margin-bottom: 3rem;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.35rem;
     }
 
     .skills {
@@ -94,9 +96,9 @@
     /* ── Section Label ── */
 
     .section-label {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 500;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--muted);
       margin-bottom: 1.25rem;
@@ -111,11 +113,11 @@
 
     .projects li {
       padding: 0.7rem 0;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid var(--rule);
     }
 
     .projects li:first-child {
-      border-top: 1px solid #eee;
+      border-top: 1px solid var(--rule);
     }
 
     .projects a {
@@ -126,16 +128,16 @@
     }
 
     .projects a:hover {
-      opacity: 0.5;
+      opacity: 0.6;
     }
 
     .project-name {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 400;
     }
 
     .project-desc {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       color: var(--muted);
       margin-top: 0.15rem;
     }
@@ -143,8 +145,8 @@
     /* ── Previously ── */
 
     .previously {
-      font-size: 0.78rem;
-      color: var(--light);
+      font-size: 0.75rem;
+      color: var(--dim);
       line-height: 1.7;
       margin-bottom: 3.5rem;
     }
@@ -154,12 +156,29 @@
     .contact a {
       color: var(--muted);
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       transition: color 0.15s ease;
     }
 
     .contact a:hover {
       color: var(--text);
+    }
+
+    /* ── Cursor blink ── */
+
+    .cursor {
+      display: inline-block;
+      width: 0.55em;
+      height: 1.1em;
+      background: var(--text);
+      vertical-align: text-bottom;
+      margin-left: 0.15em;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
     }
 
     /* ── Entrance (content below logo) ── */
@@ -191,7 +210,7 @@
     <canvas id="sampler"></canvas>
     <img id="logo-src" src="logo.jpg" alt="" crossorigin="anonymous" style="display:none">
 
-    <p class="tagline a a1">Serial Mastery.</p>
+    <p class="tagline a a1">Serial Mastery.<span class="cursor"></span></p>
     <p class="skills a a1">Design · Branding · Music · Hot Sauce · Apps</p>
 
     <p class="section-label a a1">Currently working on</p>
@@ -268,7 +287,7 @@
           const i = (y * cols + x) * 4;
           const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
 
-          // skip light/transparent pixels
+          // skip light/transparent pixels (inverted — dark pixels in source become white pixels on blue)
           const brightness = (r + g + b) / 3;
           if (brightness > 140 || a < 128) continue;
 
