@@ -32,9 +32,15 @@
       min-height: 100dvh;
     }
 
-    .page {
-      max-width: 640px;
+    .layout {
+      display: flex;
+      gap: 4rem;
       padding: 3rem 2rem;
+    }
+
+    .col {
+      flex: 1;
+      min-width: 0;
     }
 
     /* ── Pixel Logo ── */
@@ -85,28 +91,31 @@
       margin-bottom: 0.25rem;
     }
 
-    .projects a {
-      text-decoration: none;
-      color: var(--text);
-      transition: opacity 0.15s ease;
-    }
-
-    .projects a:hover {
-      opacity: 0.5;
-    }
-
     .previously {
       margin-bottom: 2.5rem;
     }
 
-    .contact a {
+    /* ── Links ── */
+
+    a {
       color: var(--text);
       text-decoration: none;
       transition: opacity 0.15s ease;
     }
 
-    .contact a:hover {
+    a:hover {
       opacity: 0.5;
+    }
+
+    /* ── Right Column ── */
+
+    .links {
+      list-style: none;
+      margin-top: 0.25rem;
+    }
+
+    .links li {
+      margin-bottom: 0.25rem;
     }
 
     /* ── Entrance ── */
@@ -121,42 +130,54 @@
     .a2 { animation-delay: 0.75s; }
     .a3 { animation-delay: 0.9s; }
 
-    @media (max-width: 480px) {
+    @media (max-width: 640px) {
+      .layout { flex-direction: column; gap: 3rem; }
       html { font-size: 12px; }
-      .page { padding: 2rem 1.5rem; }
+      .layout { padding: 2rem 1.5rem; }
       .logo-wrap { height: 60px; }
     }
   </style>
 </head>
 <body>
-  <main class="page">
+  <div class="layout">
 
-    <div class="logo-wrap">
-      <div id="pixel-logo"></div>
-    </div>
+    <main class="col">
+      <div class="logo-wrap">
+        <div id="pixel-logo"></div>
+      </div>
 
-    <canvas id="sampler"></canvas>
-    <img id="logo-src" src="logo.jpg" alt="" crossorigin="anonymous" style="display:none">
+      <canvas id="sampler"></canvas>
+      <img id="logo-src" src="logo.jpg" alt="" crossorigin="anonymous" style="display:none">
 
-    <p class="a a1">Dan Frieber</p>
-    <p class="a a1">Serial Mastery</p>
+      <p class="a a1">Dan Frieber</p>
+      <p class="a a1">Serial Mastery</p>
 
-    <p class="section-label a a1">Currently working on:</p>
+      <p class="section-label a a1">Currently working on:</p>
 
-    <ul class="projects a a1">
-      <li><a href="https://tangochilesauce.com" target="_blank" rel="noopener">Tango Chile Sauce</a></li>
-      <li><a href="#">FFEEDD</a></li>
-      <li><a href="#">Madder</a></li>
-      <li><a href="#">Dream Beds</a></li>
-    </ul>
+      <ul class="projects a a1">
+        <li><a href="https://tangochilesauce.com" target="_blank" rel="noopener">Tango Chile Sauce</a></li>
+        <li><a href="#">FFEEDD</a></li>
+        <li><a href="#">Madder</a></li>
+        <li><a href="#">Dream Beds</a></li>
+      </ul>
 
-    <p class="previously a a2">Previously: Food Network Chopped, HBO High Maintenance, Cleanmarket x Equinox, Whole Foods NYC, Chamusca NYC</p>
+      <p class="previously a a2">Previously: Food Network Chopped, HBO High Maintenance, Cleanmarket x Equinox, Whole Foods NYC, Chamusca NYC</p>
 
-    <div class="contact a a3">
-      <a href="mailto:dan@frieber.com">dan@frieber.com</a>
-    </div>
+      <div class="a a3">
+        <a href="mailto:dan@frieber.com">dan@frieber.com</a>
+      </div>
+    </main>
 
-  </main>
+    <aside class="col a a2">
+      <p>Dan Frieber</p>
+      <ul class="links">
+        <li><a href="https://instagram.com/frieber" target="_blank" rel="noopener">@frieber</a></li>
+        <li><a href="https://linkedin.com/in/danfrieber" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="#" target="_blank" rel="noopener">YouTube</a></li>
+      </ul>
+    </aside>
+
+  </div>
 
   <script>
     const img = document.getElementById('logo-src');
