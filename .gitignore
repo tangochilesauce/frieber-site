@@ -1,0 +1,3 @@
+.vercel
+cargo-archive/
+download_cargo_images.sh
