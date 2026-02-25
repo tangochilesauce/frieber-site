@@ -68,22 +68,30 @@
 
     #sampler { display: none; }
 
-    /* ── Rows ── */
+    /* ── Grid ── */
 
-    .row {
-      display: flex;
-      gap: 4rem;
-      margin-bottom: 2.5rem;
+    .grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0;
     }
 
-    .left {
-      flex: 0 0 auto;
-      width: 280px;
+    .grid > * {
+      padding: 0.15rem 0;
     }
 
-    .right {
-      flex: 1;
-      min-width: 0;
+    .cell-l {
+      padding-right: 3rem;
+      white-space: nowrap;
+    }
+
+    .cell-r {
+      /* description column */
+    }
+
+    .spacer {
+      grid-column: 1 / -1;
+      height: 1.5rem;
     }
 
     /* ── Links ── */
@@ -96,32 +104,6 @@
 
     a:hover {
       opacity: 0.5;
-    }
-
-    .links {
-      list-style: none;
-    }
-
-    .links li {
-      margin-bottom: 0.25rem;
-    }
-
-    /* ── Projects ── */
-
-    .project-row {
-      display: flex;
-      gap: 4rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .project-row .left {
-      flex: 0 0 auto;
-      width: 280px;
-    }
-
-    .project-row .right {
-      flex: 1;
-      min-width: 0;
     }
 
     /* ── Entrance ── */
@@ -157,56 +139,48 @@
     <canvas id="sampler"></canvas>
     <img id="logo-src" src="logo.jpg" alt="" crossorigin="anonymous" style="display:none">
 
-    <div class="row a a1">
-      <div class="left">Dan Frieber</div>
-      <div class="right">Serial Mastery</div>
-    </div>
+    <div class="grid a a1">
+      <div class="cell-l">Dan Frieber</div>
+      <div class="cell-r">Serial Mastery</div>
 
-    <div class="row a a1">
-      <div class="left"></div>
-      <div class="right">Creative strategy, design, design systems, physical and digital product design & development, AI product development & shipping, music, fine art, etc. etc.</div>
-    </div>
+      <div class="cell-l"></div>
+      <div class="cell-r">Creative strategy, design, design systems, physical and digital product design & development, AI product development & shipping, music, fine art, etc. etc.</div>
 
-    <div class="row a a2">
-      <div class="left">Currently working on:</div>
-      <div class="right"></div>
-    </div>
+      <div class="spacer"></div>
 
-    <div class="project-row a a2">
-      <div class="left"><a href="https://tangochilesauce.com" target="_blank" rel="noopener">Tango Chile Sauce</a></div>
-      <div class="right">Premium hot sauce in Whole Foods, Amazon, and expanding into Costco</div>
-    </div>
+      <div class="cell-l">Currently working on:</div>
+      <div class="cell-r"></div>
 
-    <div class="project-row a a2">
-      <div class="left"><a href="#">FFEEDD</a></div>
-      <div class="right">The simplest food tracker that people actually use</div>
-    </div>
+      <div class="cell-l"><a href="https://tangochilesauce.com" target="_blank" rel="noopener">Tango Chile Sauce</a></div>
+      <div class="cell-r">Premium hot sauce in Whole Foods, Amazon, and expanding into Costco</div>
 
-    <div class="project-row a a2">
-      <div class="left"><a href="#">Madder</a></div>
-      <div class="right">New music — singles and an EP dropping 2026</div>
-    </div>
+      <div class="cell-l"><a href="#">FFEEDD</a></div>
+      <div class="cell-r">The simplest food tracker that people actually use</div>
 
-    <div class="project-row a a2">
-      <div class="left"><a href="#">Dream Beds</a></div>
-      <div class="right">Relaxing bed videos on YouTube</div>
-    </div>
+      <div class="cell-l"><a href="#">Madder</a></div>
+      <div class="cell-r">New music — singles and an EP dropping 2026</div>
 
-    <div class="row a a3">
-      <div class="left">Previously:</div>
-      <div class="right">Food Network Chopped, HBO High Maintenance, Cleanmarket x Equinox, Whole Foods NYC, Chamusca NYC</div>
-    </div>
+      <div class="cell-l"><a href="#">Dream Beds</a></div>
+      <div class="cell-r">Relaxing bed videos on YouTube</div>
 
-    <div class="row a a4">
-      <div class="left"></div>
-      <div class="right">
-        <ul class="links">
-          <li><a href="https://instagram.com/frieber" target="_blank" rel="noopener">@frieber</a></li>
-          <li><a href="https://linkedin.com/in/danfrieber" target="_blank" rel="noopener">LinkedIn</a></li>
-          <li><a href="#" target="_blank" rel="noopener">YouTube</a></li>
-          <li><a href="mailto:dan@frieber.com">dan@frieber.com</a></li>
-        </ul>
-      </div>
+      <div class="spacer"></div>
+
+      <div class="cell-l">Previously:</div>
+      <div class="cell-r">Food Network Chopped, HBO High Maintenance, Cleanmarket x Equinox, Whole Foods NYC, Chamusca NYC</div>
+
+      <div class="spacer"></div>
+
+      <div class="cell-l"><a href="https://instagram.com/frieber" target="_blank" rel="noopener">@frieber</a></div>
+      <div class="cell-r">Instagram</div>
+
+      <div class="cell-l"><a href="https://linkedin.com/in/danfrieber" target="_blank" rel="noopener">LinkedIn</a></div>
+      <div class="cell-r"></div>
+
+      <div class="cell-l"><a href="#" target="_blank" rel="noopener">YouTube</a></div>
+      <div class="cell-r"></div>
+
+      <div class="cell-l"><a href="mailto:dan@frieber.com">dan@frieber.com</a></div>
+      <div class="cell-r"></div>
     </div>
 
   </main>
