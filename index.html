@@ -34,19 +34,27 @@
 
     .page {
       padding: 2rem;
-      padding-top: 1.5rem;
     }
 
     /* ── Pixel Logo ── */
 
     .logo-wrap {
-      margin-bottom: 0.5rem;
       position: relative;
+      font-size: 0;
+      line-height: 0;
+    }
+
+    .logo-wrap:not(:empty) {
+      margin-bottom: 0.5rem;
     }
 
     #pixel-logo {
       position: relative;
-      display: inline-block;
+      display: block;
+    }
+
+    #pixel-logo:empty {
+      display: none;
     }
 
     .px {
@@ -121,7 +129,7 @@
 
     @media (max-width: 640px) {
       html { font-size: 12px; }
-      .page { padding: 1.5rem; padding-top: 1rem; }
+      .page { padding: 1.5rem; }
     }
   </style>
 </head>
