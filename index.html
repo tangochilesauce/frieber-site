@@ -299,12 +299,17 @@
 
     .hue-sliders {
       position: fixed;
-      top: 50%;
+      bottom: 2rem;
       right: 2rem;
-      transform: translateY(-50%);
       display: flex;
       gap: 16px;
       z-index: 100;
+    }
+
+    .hue-wrap {
+      width: 6px;
+      height: 120px;
+      position: relative;
     }
 
     input[type="range"].hue-input {
@@ -315,26 +320,31 @@
       border-radius: 3px;
       outline: none;
       cursor: pointer;
-      writing-mode: vertical-lr;
-      direction: rtl;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-90deg);
+      transform-origin: center;
     }
 
     input[type="range"].hue-input.bg-slider {
-      background: linear-gradient(to bottom,
-        hsl(360,70%,20%), hsl(330,70%,20%), hsl(300,70%,20%),
-        hsl(270,70%,20%), hsl(240,70%,20%), hsl(210,70%,20%),
-        hsl(180,70%,20%), hsl(150,70%,20%), hsl(120,70%,20%),
-        hsl(90,70%,20%), hsl(60,70%,20%), hsl(30,70%,20%),
-        hsl(1,70%,20%), #000 99.7%, #000);
+      background: linear-gradient(to right,
+        #000 0%, #000 0.3%,
+        hsl(1,70%,20%), hsl(30,70%,20%), hsl(60,70%,20%),
+        hsl(90,70%,20%), hsl(120,70%,20%), hsl(150,70%,20%),
+        hsl(180,70%,20%), hsl(210,70%,20%), hsl(240,70%,20%),
+        hsl(270,70%,20%), hsl(300,70%,20%), hsl(330,70%,20%),
+        hsl(360,70%,20%));
     }
 
     input[type="range"].hue-input.tx-slider {
-      background: linear-gradient(to bottom,
-        hsl(360,70%,20%), hsl(330,70%,20%), hsl(300,70%,20%),
-        hsl(270,70%,20%), hsl(240,70%,20%), hsl(210,70%,20%),
-        hsl(180,70%,20%), hsl(150,70%,20%), hsl(120,70%,20%),
-        hsl(90,70%,20%), hsl(60,70%,20%), hsl(30,70%,20%),
-        hsl(1,70%,20%), #fff 99.7%, #fff);
+      background: linear-gradient(to right,
+        #fff 0%, #fff 0.3%,
+        hsl(1,70%,20%), hsl(30,70%,20%), hsl(60,70%,20%),
+        hsl(90,70%,20%), hsl(120,70%,20%), hsl(150,70%,20%),
+        hsl(180,70%,20%), hsl(210,70%,20%), hsl(240,70%,20%),
+        hsl(270,70%,20%), hsl(300,70%,20%), hsl(330,70%,20%),
+        hsl(360,70%,20%));
     }
 
     input[type="range"].hue-input::-webkit-slider-thumb {
@@ -502,8 +512,8 @@
     </div>
 
   <div class="hue-sliders">
-    <input type="range" class="hue-input bg-slider" id="bg-hue" min="0" max="360" value="0">
-    <input type="range" class="hue-input tx-slider" id="tx-hue" min="0" max="360" value="0">
+    <div class="hue-wrap"><input type="range" class="hue-input bg-slider" id="bg-hue" min="0" max="360" value="0"></div>
+    <div class="hue-wrap"><input type="range" class="hue-input tx-slider" id="tx-hue" min="0" max="360" value="0"></div>
   </div>
 
   </main>
