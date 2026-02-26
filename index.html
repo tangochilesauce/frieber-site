@@ -295,9 +295,95 @@
       background: rgba(255,80,80,0.7);
     }
 
+    /* ── Hue Sliders ── */
+
+    .hue-sliders {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 100;
+      opacity: 0.35;
+      transition: opacity 0.3s ease;
+    }
+
+    .hue-sliders:hover {
+      opacity: 1;
+    }
+
+    .hue-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hue-row label {
+      color: var(--text);
+      font-family: 'Web437 SeequaCm-2y', monospace;
+      font-size: 11px;
+      width: 20px;
+      text-align: right;
+      user-select: none;
+    }
+
+    input[type="range"].hue-input {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 120px;
+      height: 6px;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"].hue-input.bg-slider {
+      background: linear-gradient(to right,
+        #000 0%, #000 0.3%,
+        hsl(1,70%,20%), hsl(30,70%,20%), hsl(60,70%,20%),
+        hsl(90,70%,20%), hsl(120,70%,20%), hsl(150,70%,20%),
+        hsl(180,70%,20%), hsl(210,70%,20%), hsl(240,70%,20%),
+        hsl(270,70%,20%), hsl(300,70%,20%), hsl(330,70%,20%),
+        hsl(360,70%,20%));
+    }
+
+    input[type="range"].hue-input.tx-slider {
+      background: linear-gradient(to right,
+        #fff 0%, #fff 0.3%,
+        hsl(1,40%,88%), hsl(30,40%,88%), hsl(60,40%,88%),
+        hsl(90,40%,88%), hsl(120,40%,88%), hsl(150,40%,88%),
+        hsl(180,40%,88%), hsl(210,40%,88%), hsl(240,40%,88%),
+        hsl(270,40%,88%), hsl(300,40%,88%), hsl(330,40%,88%),
+        hsl(360,40%,88%));
+    }
+
+    input[type="range"].hue-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.8);
+      background: var(--thumb-color, #fff);
+      cursor: pointer;
+      box-shadow: 0 0 4px rgba(0,0,0,0.5);
+    }
+
+    input[type="range"].hue-input::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.8);
+      background: var(--thumb-color, #fff);
+      cursor: pointer;
+      box-shadow: 0 0 4px rgba(0,0,0,0.5);
+    }
+
     @media (max-width: 640px) {
       html { font-size: 12px; }
       .page { padding: 1.5rem; }
+      .hue-sliders { bottom: 1rem; right: 1rem; }
+      input[type="range"].hue-input { width: 80px; }
     }
   </style>
 </head>
@@ -335,9 +421,9 @@
       <div class="cell-r">From Grandma's recipe to Whole Foods, UNFI, Amazon, 500+ stores. 7 flavors so far.</div>
 
       <div class="cell-l"><a href="#">FFEEDD</a></div>
-      <div class="cell-r">Terminal-inspired journal app for capturing quick thoughts and ideas, available for iOS</div>
+      <div class="cell-r">Terminal-inspired journal app for capturing quick thoughts and ideas, available soon for iOS</div>
 
-      <div class="cell-l"><a href="#">Madder</a></div>
+      <div class="cell-l"><a href="#">madder</a></div>
       <div class="cell-r">Original heavy rock music</div>
 
       <div class="cell-l"><a href="#">Dream Beds</a></div>
@@ -434,6 +520,17 @@
 
     </div>
 
+  <div class="hue-sliders">
+    <div class="hue-row">
+      <label>bg</label>
+      <input type="range" class="hue-input bg-slider" id="bg-hue" min="0" max="360" value="0">
+    </div>
+    <div class="hue-row">
+      <label>tx</label>
+      <input type="range" class="hue-input tx-slider" id="tx-hue" min="0" max="360" value="0">
+    </div>
+  </div>
+
   </main>
 
   <script>
@@ -513,6 +610,53 @@
     } else {
       img.onload = buildPixels;
     }
+  </script>
+
+  <script>
+    // ── Hue Sliders ──
+    (function() {
+      var root = document.documentElement;
+      var bgSlider = document.getElementById('bg-hue');
+      var txSlider = document.getElementById('tx-hue');
+
+      function bgColor(h) {
+        return h === 0 ? '#000000' : 'hsl(' + h + ',70%,20%)';
+      }
+      function txColor(h) {
+        return h === 0 ? '#ffffff' : 'hsl(' + h + ',40%,88%)';
+      }
+
+      function updateBg(h) {
+        var c = bgColor(h);
+        root.style.setProperty('--bg', c);
+        bgSlider.style.setProperty('--thumb-color', c);
+        document.querySelector('meta[name="theme-color"]').content = c;
+      }
+      function updateTx(h) {
+        var c = txColor(h);
+        root.style.setProperty('--text', c);
+        txSlider.style.setProperty('--thumb-color', c);
+      }
+
+      bgSlider.addEventListener('input', function() {
+        var h = parseInt(this.value);
+        updateBg(h);
+        try { localStorage.setItem('frieber-bg-hue', h); } catch(e) {}
+      });
+      txSlider.addEventListener('input', function() {
+        var h = parseInt(this.value);
+        updateTx(h);
+        try { localStorage.setItem('frieber-tx-hue', h); } catch(e) {}
+      });
+
+      // Restore from localStorage
+      try {
+        var savedBg = localStorage.getItem('frieber-bg-hue');
+        var savedTx = localStorage.getItem('frieber-tx-hue');
+        if (savedBg !== null) { bgSlider.value = savedBg; updateBg(parseInt(savedBg)); }
+        if (savedTx !== null) { txSlider.value = savedTx; updateTx(parseInt(savedTx)); }
+      } catch(e) {}
+    })();
   </script>
 
   <script>
