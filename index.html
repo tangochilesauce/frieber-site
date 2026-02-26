@@ -38,6 +38,7 @@
 
     .page {
       padding: 2rem;
+      max-width: 85vw;
     }
 
     /* ── Pixel Logo ── */
@@ -115,7 +116,7 @@
     }
 
     a:hover {
-      opacity: 0.5;
+      text-decoration: underline;
     }
 
     /* ── Entrance ── */
@@ -131,6 +132,172 @@
     .a3 { animation-delay: 0.9s; }
     .a4 { animation-delay: 1.05s; }
 
+    /* ── Editor Mode ── */
+
+    .edit-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: #111;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+      font-family: system-ui, sans-serif;
+      font-size: 13px;
+      z-index: 9999;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .edit-bar button {
+      background: #fff;
+      color: #111;
+      border: none;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .edit-bar button:hover {
+      background: #ddd;
+    }
+
+    .edit-bar .status {
+      opacity: 0.6;
+    }
+
+    body.editing .page {
+      padding-top: 4rem;
+    }
+
+    body.editing [contenteditable="true"] {
+      outline: 1px dashed rgba(255,255,255,0.25);
+      outline-offset: 2px;
+      cursor: text;
+    }
+
+    body.editing [contenteditable="true"]:focus {
+      outline: 1px solid rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* ── Edit mode: rows become draggable flex items ── */
+
+    body.editing .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    body.editing .grid > .spacer {
+      height: 1.5rem;
+    }
+
+    .edit-row {
+      display: grid;
+      grid-template-columns: 24px auto 1fr auto;
+      gap: 0;
+      align-items: start;
+      padding: 0.15rem 0;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      transition: border-color 0.15s, background 0.15s;
+      position: relative;
+    }
+
+    .edit-row:hover {
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .edit-row.dragging {
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .edit-row.drop-above {
+      border-top: 2px solid #fff;
+    }
+
+    .edit-row.drop-below {
+      border-bottom: 2px solid #fff;
+    }
+
+    .edit-row .drag-handle {
+      cursor: grab;
+      opacity: 0.4;
+      font-size: 12px;
+      font-family: system-ui, sans-serif;
+      user-select: none;
+      padding-top: 2px;
+    }
+
+    .edit-row:hover .drag-handle {
+      opacity: 0.8;
+    }
+
+    .edit-row .cell-l {
+      padding-right: 3rem;
+      white-space: nowrap;
+    }
+
+    .edit-row .row-btns {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      margin-left: 8px;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .edit-row:hover .row-btns {
+      opacity: 1;
+    }
+
+    .drag-ghost {
+      position: fixed;
+      pointer-events: none;
+      z-index: 10000;
+      opacity: 0.8;
+      background: rgba(0,68,170,0.95);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 4px;
+      padding: 4px 12px;
+      font-family: 'Web437 SeequaCm-2y', monospace;
+      font-size: 16px;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .row-btn {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: none;
+      width: 20px;
+      height: 20px;
+      font-size: 14px;
+      line-height: 1;
+      border-radius: 3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, sans-serif;
+    }
+
+    .row-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .row-btn.del {
+      background: rgba(255,80,80,0.4);
+    }
+
+    .row-btn.del:hover {
+      background: rgba(255,80,80,0.7);
+    }
+
     @media (max-width: 640px) {
       html { font-size: 12px; }
       .page { padding: 1.5rem; }
@@ -138,6 +305,14 @@
   </style>
 </head>
 <body>
+  <div class="edit-bar" id="edit-bar" style="display:none">
+    <span>EDIT MODE — click any text to change it</span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span class="status" id="save-status"></span>
+      <button onclick="saveFile()">Save to File</button>
+    </div>
+  </div>
+
   <main class="page">
 
     <div class="logo-wrap">
@@ -152,34 +327,37 @@
       <div class="cell-r"><a href="mailto:dan@frieber.com">dan@frieber.com</a> <a href="https://instagram.com/frieber" target="_blank" rel="noopener">@frieber</a> <a href="https://linkedin.com/in/danfrieber" target="_blank" rel="noopener">LinkedIn</a></div>
 
       <div class="cell-l">Serial Mastery</div>
-      <div class="cell-r">Creative direction & strategy, design systems, product design and development - physical and digital, CPG-retail pipeline, branding architecture, AI product development, audio engineering, music, fine art</div>
+      <div class="cell-r">Creative direction &amp; strategy, design systems, product design and development - physical and digital, CPG-retail pipeline, branding architecture, AI product development, audio engineering, music, fine art</div>
 
       <div class="spacer"></div>
 
-      <div class="cell-l">Currently_</div>
+      <div class="cell-l">CURRENTLY</div>
       <div class="cell-r"></div>
 
-      <div class="cell-l"><a href="https://tangochilesauce.com" target="_blank" rel="noopener">Tango Chile Sauce</a></div>
-      <div class="cell-r">Premium hot sauce in Whole Foods, Amazon, and expanding into Costco</div>
+      <div class="cell-l"><a href="https://tangochilesauce.com" target="_blank" rel="noopener">Tango</a></div>
+      <div class="cell-r">Family recipe to Whole Foods, Amazon, and Costco. 6 self-produced SKUs. Food Network Chopped. No investors.</div>
 
       <div class="cell-l"><a href="#">FFEEDD</a></div>
-      <div class="cell-r">The simplest food tracker that people actually use</div>
+      <div class="cell-r">Terminal-inspired journal app designed and coded from scratch using only AI. iOS</div>
 
       <div class="cell-l"><a href="#">Madder</a></div>
-      <div class="cell-r">New music — singles and an EP dropping 2026</div>
+      <div class="cell-r">New music — EP dropping 2026. Seeking guitarist and drummer in LA</div>
 
       <div class="cell-l"><a href="#">Dream Beds</a></div>
-      <div class="cell-r">Relaxing bed videos on YouTube</div>
+      <div class="cell-r">Fully autonomous YouTube pipeline — AI picks topics, generates video and metadata, uploads on schedule</div>
+
+      <div class="cell-l">Dreamwatch</div>
+      <div class="cell-r">Always-on daemon that encodes, uploads, schedules, and syncs YouTube videos autonomously. 100% AI-coded</div>
+
+      <div class="cell-l">Tango Dashboard</div>
+      <div class="cell-r">Custom production OS — manages COGS inventory and translates POs into scheduled cook sessions. 100% AI-coded</div>
 
       <div class="cell-l"><a href="https://assistant-k5go.vercel.app" target="_blank" rel="noopener">PL8</a></div>
-      <div class="cell-r">Personal operating system for running multiple businesses</div>
+      <div class="cell-r">Personal OS for managing 10+ businesses and creative projects from one interface. Built with AI</div>
 
       <div class="spacer"></div>
 
       <div class="cell-l">Also_</div>
-      <div class="cell-r"></div>
-
-      <div class="cell-l">Intervale Ranch</div>
       <div class="cell-r"></div>
 
       <div class="cell-l">Mega Jerk</div>
@@ -200,6 +378,12 @@
       <div class="spacer"></div>
 
       <div class="cell-l">Previously_</div>
+      <div class="cell-r"></div>
+
+      <div class="cell-l">Radio Water</div>
+      <div class="cell-r"></div>
+
+      <div class="cell-l">Intervale Ranch</div>
       <div class="cell-r"></div>
 
       <div class="cell-l">Hyper</div>
@@ -223,13 +407,7 @@
       <div class="cell-l">Facebook</div>
       <div class="cell-r"></div>
 
-      <div class="cell-l">Reebok</div>
-      <div class="cell-r"></div>
-
       <div class="cell-l">Evian</div>
-      <div class="cell-r"></div>
-
-      <div class="cell-l">Equinox</div>
       <div class="cell-r"></div>
 
       <div class="cell-l">Apple</div>
@@ -254,9 +432,6 @@
       <div class="cell-r"></div>
 
       <div class="cell-l">Tango Table</div>
-      <div class="cell-r"></div>
-
-      <div class="cell-l">Radio Water</div>
       <div class="cell-r"></div>
 
     </div>
@@ -339,6 +514,216 @@
       buildPixels();
     } else {
       img.onload = buildPixels;
+    }
+  </script>
+
+  <script>
+    // ── Edit Mode (press E or add ?edit to URL) ──
+
+    var dragging = null;
+    var ghost = null;
+
+    function clearDrop() {
+      document.querySelectorAll('.drop-above,.drop-below').forEach(function(el) {
+        el.classList.remove('drop-above');
+        el.classList.remove('drop-below');
+      });
+    }
+
+    function handleMove(e) {
+      if (!dragging) return;
+      e.preventDefault();
+      ghost.style.left = (e.clientX + 12) + 'px';
+      ghost.style.top = (e.clientY - 10) + 'px';
+      clearDrop();
+      var rows = document.querySelectorAll('.edit-row');
+      for (var i = 0; i < rows.length; i++) {
+        var r = rows[i];
+        if (r === dragging) continue;
+        var rect = r.getBoundingClientRect();
+        if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
+          var mid = rect.top + rect.height / 2;
+          r.classList.add(e.clientY < mid ? 'drop-above' : 'drop-below');
+          break;
+        }
+      }
+    }
+
+    function handleUp() {
+      if (!dragging) return;
+      var above = document.querySelector('.drop-above');
+      var below = document.querySelector('.drop-below');
+      if (above) above.parentNode.insertBefore(dragging, above);
+      else if (below && below.nextSibling) below.parentNode.insertBefore(dragging, below.nextSibling);
+      else if (below) below.parentNode.appendChild(dragging);
+      dragging.classList.remove('dragging');
+      clearDrop();
+      if (ghost) { ghost.parentNode.removeChild(ghost); ghost = null; }
+      dragging = null;
+      document.removeEventListener('mousemove', handleMove);
+      document.removeEventListener('mouseup', handleUp);
+    }
+
+    function beginDrag(e, row) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragging = row;
+      row.classList.add('dragging');
+      ghost = document.createElement('div');
+      ghost.className = 'drag-ghost';
+      var lbl = row.querySelector('.cell-l');
+      ghost.textContent = lbl ? lbl.textContent : '...';
+      ghost.style.left = (e.clientX + 12) + 'px';
+      ghost.style.top = (e.clientY - 10) + 'px';
+      document.body.appendChild(ghost);
+      document.addEventListener('mousemove', handleMove);
+      document.addEventListener('mouseup', handleUp);
+    }
+
+    function buildEditRow(cellL, cellR) {
+      var row = document.createElement('div');
+      row.className = 'edit-row';
+
+      var handle = document.createElement('div');
+      handle.className = 'drag-handle';
+      handle.textContent = '\u2807';
+      handle.onmousedown = function(e) { beginDrag(e, row); };
+
+      var btns = document.createElement('div');
+      btns.className = 'row-btns';
+
+      var addBtn = document.createElement('button');
+      addBtn.className = 'row-btn';
+      addBtn.textContent = '+';
+      addBtn.onclick = function() {
+        var nL = document.createElement('div');
+        nL.className = 'cell-l';
+        nL.contentEditable = 'true';
+        nL.textContent = 'New Item';
+        var nR = document.createElement('div');
+        nR.className = 'cell-r';
+        nR.contentEditable = 'true';
+        nR.textContent = '';
+        var nRow = buildEditRow(nL, nR);
+        if (row.nextSibling) row.parentNode.insertBefore(nRow, row.nextSibling);
+        else row.parentNode.appendChild(nRow);
+        nL.focus();
+      };
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'row-btn del';
+      delBtn.textContent = 'x';
+      delBtn.onclick = function() {
+        if (confirm('Delete "' + cellL.textContent.trim() + '"?')) {
+          row.parentNode.removeChild(row);
+        }
+      };
+
+      btns.appendChild(addBtn);
+      btns.appendChild(delBtn);
+
+      cellL.contentEditable = 'true';
+      cellL.spellcheck = false;
+      cellR.contentEditable = 'true';
+      cellR.spellcheck = false;
+
+      row.appendChild(handle);
+      row.appendChild(cellL);
+      row.appendChild(cellR);
+      row.appendChild(btns);
+
+      return row;
+    }
+
+    function activateEditor() {
+      document.body.classList.add('editing');
+      document.getElementById('edit-bar').style.display = 'flex';
+
+      var grid = document.querySelector('.grid');
+
+      // Snapshot pairs with their next sibling for insertion
+      var pairs = [];
+      var kids = grid.children;
+      for (var i = 0; i < kids.length; i++) {
+        if (kids[i].classList.contains('cell-r')) {
+          var left = kids[i - 1];
+          if (left && left.classList.contains('cell-l')) {
+            pairs.push({ l: left, r: kids[i], next: kids[i].nextSibling });
+          }
+        }
+      }
+
+      // Wrap each pair — capture next BEFORE any DOM changes
+      for (var j = 0; j < pairs.length; j++) {
+        var p = pairs[j];
+        var next = p.r.nextSibling; // grab fresh ref right before wrapping
+        var editRow = buildEditRow(p.l, p.r);
+        // p.l and p.r are now inside editRow (removed from grid)
+        // insert editRow where they were
+        if (next && next.parentNode === grid) {
+          grid.insertBefore(editRow, next);
+        } else {
+          grid.appendChild(editRow);
+        }
+      }
+    }
+
+    if (window.location.search.indexOf('edit') !== -1) {
+      activateEditor();
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'e' && !e.metaKey && !e.ctrlKey && !document.body.classList.contains('editing') && document.activeElement === document.body) {
+        activateEditor();
+      }
+    });
+
+    function saveFile() {
+      var clone = document.documentElement.cloneNode(true);
+
+      // Remove edit bar
+      var bar = clone.querySelector('#edit-bar');
+      if (bar) bar.parentNode.removeChild(bar);
+
+      // Unwrap edit-rows back to flat cell-l + cell-r
+      var editRows = clone.querySelectorAll('.edit-row');
+      for (var i = 0; i < editRows.length; i++) {
+        var er = editRows[i];
+        var parent = er.parentNode;
+        var left = er.querySelector('.cell-l');
+        var right = er.querySelector('.cell-r');
+        if (left) parent.insertBefore(left, er);
+        if (right) parent.insertBefore(right, er);
+        parent.removeChild(er);
+      }
+
+      // Clean attributes
+      var editables = clone.querySelectorAll('[contenteditable]');
+      for (var j = 0; j < editables.length; j++) {
+        editables[j].removeAttribute('contenteditable');
+        editables[j].removeAttribute('spellcheck');
+      }
+      clone.querySelector('body').className = '';
+
+      // Remove editor script
+      var scripts = clone.querySelectorAll('script');
+      var last = scripts[scripts.length - 1];
+      if (last && last.textContent.indexOf('Edit Mode') !== -1) {
+        last.parentNode.removeChild(last);
+      }
+
+      var html = '<!DOCTYPE html>\n' + clone.outerHTML;
+      var blob = new Blob([html], { type: 'text/html' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'index.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      document.getElementById('save-status').textContent = 'Saved!';
+      setTimeout(function() { document.getElementById('save-status').textContent = ''; }, 2000);
     }
   </script>
 </body>
