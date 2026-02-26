@@ -376,13 +376,6 @@
 
   <main class="page">
 
-    <div class="logo-wrap">
-      <div id="pixel-logo"></div>
-    </div>
-
-    <canvas id="sampler"></canvas>
-    <img id="logo-src" src="logo.jpg" alt="" crossorigin="anonymous" style="display:none">
-
     <div class="grid a a1">
       <div class="cell-l">Dan Frieber</div>
       <div class="cell-r"><a href="mailto:dan@frieber.com">dan@frieber.com</a>&nbsp; &nbsp;<a href="https://instagram.com/frieber" target="_blank" rel="noopener">@frieber</a>&nbsp; &nbsp;<a href="https://linkedin.com/in/danfrieber" target="_blank" rel="noopener">LinkedIn</a></div>
@@ -505,84 +498,6 @@
 
   </main>
 
-  <script>
-    const img = document.getElementById('logo-src');
-    const canvas = document.getElementById('sampler');
-    const container = document.getElementById('pixel-logo');
-
-    function buildPixels() {
-      const ctx = canvas.getContext('2d');
-
-      const resolution = 24;
-      const aspect = img.naturalWidth / img.naturalHeight;
-      const cols = Math.round(resolution * aspect);
-      const rows = resolution;
-
-      canvas.width = cols;
-      canvas.height = rows;
-      ctx.drawImage(img, 0, 0, cols, rows);
-
-      const data = ctx.getImageData(0, 0, cols, rows).data;
-      const isMobile = window.innerWidth <= 480;
-      const pxSize = isMobile ? 3 : 4;
-      const gap = 1;
-      const step = pxSize + gap;
-
-      container.style.width = (cols * step) + 'px';
-      container.style.height = (rows * step) + 'px';
-
-      const pixels = [];
-
-      for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < cols; x++) {
-          const i = (y * cols + x) * 4;
-          const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
-
-          const brightness = (r + g + b) / 3;
-          if (brightness > 140 || a < 128) continue;
-
-          const el = document.createElement('div');
-          el.className = 'px';
-
-          const fx = x * step;
-          const fy = y * step;
-          el.style.left = fx + 'px';
-          el.style.top = fy + 'px';
-          el.style.setProperty('--size', pxSize + 'px');
-
-          const angle = Math.random() * Math.PI * 2;
-          const dist = 60 + Math.random() * 120;
-          el.style.setProperty('--sx', Math.cos(angle) * dist + 'px');
-          el.style.setProperty('--sy', Math.sin(angle) * dist + 'px');
-
-          const diag = (x + y) / (cols + rows);
-          el.style.setProperty('--d', (diag * 0.4 + Math.random() * 0.08) + 's');
-
-          const alpha = Math.min(1, (200 - brightness) / 160);
-          el.style.opacity = 0;
-          el.dataset.alpha = alpha;
-
-          container.appendChild(el);
-          pixels.push(el);
-        }
-      }
-
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          pixels.forEach(el => {
-            el.classList.add('land');
-            el.style.opacity = el.dataset.alpha;
-          });
-        });
-      });
-    }
-
-    if (img.complete && img.naturalWidth > 0) {
-      buildPixels();
-    } else {
-      img.onload = buildPixels;
-    }
-  </script>
 
   <script>
     // ── Hue Sliders ──
