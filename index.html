@@ -372,9 +372,10 @@
 
     @media (max-width: 640px) {
       html { font-size: 12px; }
-      .page { padding: 1.5rem; }
-      .hue-sliders { bottom: 1rem; right: 1rem; }
+      .page { padding: 1.5rem; max-width: 100%; }
+      .hue-sliders { bottom: 1rem; right: 0.75rem; gap: 8px; }
       input[type="range"].hue-input { width: 80px; }
+      .hue-wrap { height: 90px; }
     }
   </style>
 </head>
@@ -391,7 +392,7 @@
 
     <div class="grid a a1">
       <div class="cell-l">Dan Frieber</div>
-      <div class="cell-r"><a href="mailto:dan@frieber.com">dan@frieber.com</a>&nbsp; &nbsp;<a href="https://instagram.com/frieber" target="_blank" rel="noopener">@frieber</a>&nbsp; &nbsp;<a href="https://linkedin.com/in/danfrieber" target="_blank" rel="noopener">LinkedIn</a></div>
+      <div class="cell-r"><a href="mailto:dan@frieber.com">dan@frieber.com</a> &middot; <a href="https://instagram.com/frieber" target="_blank" rel="noopener">@frieber</a> &middot; <a href="https://linkedin.com/in/danfrieber" target="_blank" rel="noopener">LinkedIn</a></div>
 
       <div class="cell-l">Serial Obsessor</div>
       <div class="cell-r">Creative direction &amp; strategy, design systems, product design and development (physical and digital), CPG idea-to-retail pipeline, branding architecture, AI product development, acidified food product safety, event production, live sound, audio engineering, bass guitar, musical performance, fine art</div>
