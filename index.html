@@ -302,8 +302,7 @@
       bottom: 2rem;
       right: 2rem;
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      gap: 12px;
       z-index: 100;
       opacity: 0.35;
       transition: opacity 0.3s ease;
@@ -311,21 +310,6 @@
 
     .hue-sliders:hover {
       opacity: 1;
-    }
-
-    .hue-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .hue-row label {
-      color: var(--text);
-      font-family: 'Web437 SeequaCm-2y', monospace;
-      font-size: 11px;
-      width: 20px;
-      text-align: right;
-      user-select: none;
     }
 
     input[type="range"].hue-input {
@@ -351,11 +335,11 @@
     input[type="range"].hue-input.tx-slider {
       background: linear-gradient(to right,
         #fff 0%, #fff 0.3%,
-        hsl(1,40%,88%), hsl(30,40%,88%), hsl(60,40%,88%),
-        hsl(90,40%,88%), hsl(120,40%,88%), hsl(150,40%,88%),
-        hsl(180,40%,88%), hsl(210,40%,88%), hsl(240,40%,88%),
-        hsl(270,40%,88%), hsl(300,40%,88%), hsl(330,40%,88%),
-        hsl(360,40%,88%));
+        hsl(1,70%,20%), hsl(30,70%,20%), hsl(60,70%,20%),
+        hsl(90,70%,20%), hsl(120,70%,20%), hsl(150,70%,20%),
+        hsl(180,70%,20%), hsl(210,70%,20%), hsl(240,70%,20%),
+        hsl(270,70%,20%), hsl(300,70%,20%), hsl(330,70%,20%),
+        hsl(360,70%,20%));
     }
 
     input[type="range"].hue-input::-webkit-slider-thumb {
@@ -521,14 +505,8 @@
     </div>
 
   <div class="hue-sliders">
-    <div class="hue-row">
-      <label>bg</label>
-      <input type="range" class="hue-input bg-slider" id="bg-hue" min="0" max="360" value="0">
-    </div>
-    <div class="hue-row">
-      <label>tx</label>
-      <input type="range" class="hue-input tx-slider" id="tx-hue" min="0" max="360" value="0">
-    </div>
+    <input type="range" class="hue-input bg-slider" id="bg-hue" min="0" max="360" value="0">
+    <input type="range" class="hue-input tx-slider" id="tx-hue" min="0" max="360" value="0">
   </div>
 
   </main>
