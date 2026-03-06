@@ -329,7 +329,7 @@
       background: rgba(255,80,80,0.7);
     }
 
-    /* ── Hue Sliders ── */
+    /* ── Hue Sliders (mixing console style) ── */
 
     .hue-sliders {
       position: fixed;
@@ -337,79 +337,67 @@
       right: 2rem;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 16px;
+      gap: 12px;
       z-index: 100;
     }
 
-    .hue-wrap {
-      width: 6px;
-      height: 120px;
-      position: relative;
+    .mc-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    input[type="range"].hue-input {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 120px;
-      height: 6px;
-      border-radius: 3px;
-      outline: none;
+    .mc-label {
+      font-family: system-ui, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+      opacity: 0.35;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .mc-slider {
+      position: relative;
+      width: 100px;
+      height: 28px;
       cursor: pointer;
+    }
+
+    .mc-rail {
       position: absolute;
       top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-90deg);
-      transform-origin: center;
+      left: 0;
+      right: 0;
+      height: 4px;
+      transform: translateY(-50%);
+      border-radius: 2px;
+      overflow: hidden;
     }
 
-    input[type="range"].hue-input.bg-slider {
-      background: linear-gradient(to right,
-        #000 0%, #000 0.3%,
-        hsl(1,70%,20%), hsl(30,70%,20%), hsl(60,70%,20%),
-        hsl(90,70%,20%), hsl(120,70%,20%), hsl(150,70%,20%),
-        hsl(180,70%,20%), hsl(210,70%,20%), hsl(240,70%,20%),
-        hsl(270,70%,20%), hsl(300,70%,20%), hsl(330,70%,20%),
-        hsl(360,70%,20%));
+    .mc-rail canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
-    input[type="range"].hue-input.tx-slider {
-      background: linear-gradient(to right,
-        #fff 0%, #fff 0.3%,
-        hsl(1,70%,20%), hsl(30,70%,20%), hsl(60,70%,20%),
-        hsl(90,70%,20%), hsl(120,70%,20%), hsl(150,70%,20%),
-        hsl(180,70%,20%), hsl(210,70%,20%), hsl(240,70%,20%),
-        hsl(270,70%,20%), hsl(300,70%,20%), hsl(330,70%,20%),
-        hsl(360,70%,20%));
-    }
-
-    input[type="range"].hue-input::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.8);
-      background: var(--thumb-color, #fff);
-      cursor: pointer;
-      box-shadow: 0 0 4px rgba(0,0,0,0.5);
-    }
-
-    input[type="range"].hue-input::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.8);
-      background: var(--thumb-color, #fff);
-      cursor: pointer;
-      box-shadow: 0 0 4px rgba(0,0,0,0.5);
+    .mc-thumb {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 20px;
+      background: var(--bg);
+      border: 1.5px solid var(--text);
+      pointer-events: none;
+      z-index: 2;
     }
 
     @media (max-width: 640px) {
       html { font-size: 12px; }
       .page { padding: 1.5rem; max-width: 100%; }
       .hue-sliders { bottom: 1rem; right: 0.75rem; gap: 8px; }
-      input[type="range"].hue-input { width: 80px; }
-      .hue-wrap { height: 90px; }
+      .mc-slider { width: 80px; }
+      .highlight { padding-bottom: 1rem; }
     }
   </style>
 </head>
@@ -550,8 +538,20 @@
     </div>
 
   <div class="hue-sliders">
-    <div class="hue-wrap"><input type="range" class="hue-input bg-slider" id="bg-hue" min="0" max="360" value="0"></div>
-    <div class="hue-wrap"><input type="range" class="hue-input tx-slider" id="tx-hue" min="0" max="360" value="0"></div>
+    <div class="mc-row">
+      <span class="mc-label">TEXT</span>
+      <div class="mc-slider" id="tx-slider">
+        <div class="mc-rail"><canvas id="tx-canvas"></canvas></div>
+        <div class="mc-thumb" id="tx-thumb"></div>
+      </div>
+    </div>
+    <div class="mc-row">
+      <span class="mc-label">BG</span>
+      <div class="mc-slider" id="bg-slider">
+        <div class="mc-rail"><canvas id="bg-canvas"></canvas></div>
+        <div class="mc-thumb" id="bg-thumb"></div>
+      </div>
+    </div>
   </div>
 
   </main>
@@ -570,37 +570,95 @@
   </script>
 
   <script>
-    // ── Hue Sliders ──
+    // ── Hue Sliders (mixing console) ──
     (function() {
       var root = document.documentElement;
-      var bgSlider = document.getElementById('bg-hue');
-      var txSlider = document.getElementById('tx-hue');
+      var txPos = 0;
+      var bgPos = 0;
 
-      function bgColor(h) {
-        return h === 0 ? '#000000' : 'hsl(' + h + ',70%,20%)';
+      function bgColor(pos) {
+        return pos === 0 ? '#000000' : 'hsl(' + Math.round(pos * 360) + ',70%,20%)';
       }
-      function txColor(h) {
-        return h === 0 ? '#ffffff' : 'hsl(' + h + ',100%,65%)';
-      }
-
-      function updateBg(h) {
-        var c = bgColor(h);
-        root.style.setProperty('--bg', c);
-        bgSlider.style.setProperty('--thumb-color', c);
-        document.querySelector('meta[name="theme-color"]').content = c;
-      }
-      function updateTx(h) {
-        var c = txColor(h);
-        root.style.setProperty('--text', c);
-        txSlider.style.setProperty('--thumb-color', c);
+      function txColor(pos) {
+        return pos === 0 ? '#ffffff' : 'hsl(' + Math.round(pos * 360) + ',100%,65%)';
       }
 
-      bgSlider.addEventListener('input', function() {
-        updateBg(parseInt(this.value));
+      function applyColors() {
+        root.style.setProperty('--text', txColor(txPos));
+        root.style.setProperty('--bg', bgColor(bgPos));
+        document.querySelector('meta[name="theme-color"]').content = bgColor(bgPos);
+      }
+
+      // Draw gradient rails
+      function drawRail(canvasId, colorFn) {
+        var canvas = document.getElementById(canvasId);
+        var rect = canvas.parentElement.getBoundingClientRect();
+        var w = Math.round(rect.width);
+        var h = Math.round(rect.height);
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        for (var x = 0; x < w; x++) {
+          ctx.fillStyle = colorFn(x / w);
+          ctx.fillRect(x, 0, 1, h);
+        }
+      }
+
+      function drawAllRails() {
+        drawRail('tx-canvas', txColor);
+        drawRail('bg-canvas', bgColor);
+      }
+
+      // Position thumbs
+      function updateThumb(thumbId, sliderId, pos) {
+        var slider = document.getElementById(sliderId);
+        var thumb = document.getElementById(thumbId);
+        thumb.style.left = (pos * slider.offsetWidth) + 'px';
+      }
+
+      function updateAllThumbs() {
+        updateThumb('tx-thumb', 'tx-slider', txPos);
+        updateThumb('bg-thumb', 'bg-slider', bgPos);
+      }
+
+      // Drag handling
+      function makeDraggable(sliderId, onChange) {
+        var slider = document.getElementById(sliderId);
+        var active = false;
+        function getVal(e) {
+          var rect = slider.getBoundingClientRect();
+          var cx = e.touches ? e.touches[0].clientX : e.clientX;
+          return Math.max(0, Math.min(1, (cx - rect.left) / rect.width));
+        }
+        function start(e) { e.preventDefault(); active = true; onChange(getVal(e)); }
+        function move(e) { if (!active) return; e.preventDefault(); onChange(getVal(e)); }
+        function end() { active = false; }
+        slider.addEventListener('mousedown', start);
+        slider.addEventListener('touchstart', start, { passive: false });
+        window.addEventListener('mousemove', move);
+        window.addEventListener('touchmove', move, { passive: false });
+        window.addEventListener('mouseup', end);
+        window.addEventListener('touchend', end);
+      }
+
+      makeDraggable('tx-slider', function(val) {
+        txPos = val;
+        applyColors();
+        updateThumb('tx-thumb', 'tx-slider', txPos);
       });
-      txSlider.addEventListener('input', function() {
-        updateTx(parseInt(this.value));
+      makeDraggable('bg-slider', function(val) {
+        bgPos = val;
+        applyColors();
+        updateThumb('bg-thumb', 'bg-slider', bgPos);
       });
+
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          drawAllRails();
+          updateAllThumbs();
+        });
+      });
+      window.addEventListener('resize', function() { drawAllRails(); updateAllThumbs(); });
     })();
   </script>
 
