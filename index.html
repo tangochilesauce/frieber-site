@@ -560,6 +560,16 @@
   <script src="/_vercel/speed-insights/script.js" defer></script>
 
   <script>
+    // ── Link Click Tracking ──
+    document.addEventListener('click', function(e) {
+      var a = e.target.closest('a');
+      if (!a || !a.href) return;
+      var label = a.textContent.trim();
+      if (window.va) window.va('event', { name: 'click', data: { link: label, href: a.href } });
+    });
+  </script>
+
+  <script>
     // ── Hue Sliders ──
     (function() {
       var root = document.documentElement;
