@@ -336,26 +336,10 @@
       bottom: 2rem;
       right: 2rem;
       display: flex;
-      flex-direction: row;
-      align-items: flex-end;
-      gap: 12px;
-      z-index: 100;
-    }
-
-    .mc-col {
-      display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
-    }
-
-    .mc-label {
-      font-family: system-ui, sans-serif;
-      font-size: 10px;
-      letter-spacing: 0.5px;
-      opacity: 0.35;
-      white-space: nowrap;
-      user-select: none;
+      gap: 16px;
+      z-index: 100;
     }
 
     .mc-slider {
@@ -540,19 +524,13 @@
     </div>
 
   <div class="hue-sliders">
-    <div class="mc-col">
-      <div class="mc-slider" id="bg-slider">
-        <div class="mc-rail"><canvas id="bg-canvas"></canvas></div>
-        <div class="mc-thumb" id="bg-thumb"></div>
-      </div>
-      <span class="mc-label">BG</span>
+    <div class="mc-slider" id="bg-slider">
+      <div class="mc-rail"><canvas id="bg-canvas"></canvas></div>
+      <div class="mc-thumb" id="bg-thumb"></div>
     </div>
-    <div class="mc-col">
-      <div class="mc-slider" id="tx-slider">
-        <div class="mc-rail"><canvas id="tx-canvas"></canvas></div>
-        <div class="mc-thumb" id="tx-thumb"></div>
-      </div>
-      <span class="mc-label">TEXT</span>
+    <div class="mc-slider" id="tx-slider">
+      <div class="mc-rail"><canvas id="tx-canvas"></canvas></div>
+      <div class="mc-thumb" id="tx-thumb"></div>
     </div>
   </div>
 
@@ -600,9 +578,9 @@
         canvas.width = w;
         canvas.height = h;
         var ctx = canvas.getContext('2d');
-        for (var x = 0; x < w; x++) {
-          ctx.fillStyle = colorFn(x / w);
-          ctx.fillRect(x, 0, 1, h);
+        for (var y = 0; y < h; y++) {
+          ctx.fillStyle = colorFn(y / h);
+          ctx.fillRect(0, y, w, 1);
         }
       }
 
