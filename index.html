@@ -102,6 +102,11 @@
       /* description column */
     }
 
+    .cell-span {
+      grid-column: 1 / -1;
+      padding: 0.35rem 0;
+    }
+
     .spacer {
       grid-column: 1 / -1;
       height: 3rem;
@@ -394,8 +399,7 @@
       <div class="cell-l">Dan Frieber</div>
       <div class="cell-r"><a href="mailto:dan@frieber.com">dan@frieber.com</a> &middot; <a href="https://instagram.com/frieber" target="_blank" rel="noopener">@frieber</a> &middot; <a href="https://linkedin.com/in/danfrieber" target="_blank" rel="noopener">LinkedIn</a></div>
 
-      <div class="cell-l">Serial Obsessor</div>
-      <div class="cell-r">Creative direction &amp; strategy, design systems, product design and development (physical and digital), CPG idea-to-retail pipeline, branding architecture, AI product development, acidified food product safety, event production, live sound, audio engineering, bass guitar, musical performance, fine art</div>
+      <div class="cell-span">Creative direction &amp; strategy, design systems, product design and development (physical and digital), CPG idea-to-retail pipeline, branding architecture, AI product development, acidified food product safety, event production, live sound, audio engineering, bass guitar, musical performance, fine art</div>
 
       <div class="spacer"></div>
 
@@ -540,23 +544,11 @@
       }
 
       bgSlider.addEventListener('input', function() {
-        var h = parseInt(this.value);
-        updateBg(h);
-        try { localStorage.setItem('frieber-bg-hue', h); } catch(e) {}
+        updateBg(parseInt(this.value));
       });
       txSlider.addEventListener('input', function() {
-        var h = parseInt(this.value);
-        updateTx(h);
-        try { localStorage.setItem('frieber-tx-hue', h); } catch(e) {}
+        updateTx(parseInt(this.value));
       });
-
-      // Restore from localStorage
-      try {
-        var savedBg = localStorage.getItem('frieber-bg-hue');
-        var savedTx = localStorage.getItem('frieber-tx-hue');
-        if (savedBg !== null) { bgSlider.value = savedBg; updateBg(parseInt(savedBg)); }
-        if (savedTx !== null) { txSlider.value = savedTx; updateTx(parseInt(savedTx)); }
-      } catch(e) {}
     })();
   </script>
 
