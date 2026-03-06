@@ -329,22 +329,24 @@
       background: rgba(255,80,80,0.7);
     }
 
-    /* ── Hue Sliders (mixing console style) ── */
+    /* ── Hue Sliders (mixing console style, vertical) ── */
 
     .hue-sliders {
       position: fixed;
       bottom: 2rem;
       right: 2rem;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      align-items: flex-end;
       gap: 12px;
       z-index: 100;
     }
 
-    .mc-row {
+    .mc-col {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .mc-label {
@@ -358,18 +360,18 @@
 
     .mc-slider {
       position: relative;
-      width: 100px;
-      height: 28px;
+      width: 28px;
+      height: 120px;
       cursor: pointer;
     }
 
     .mc-rail {
       position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      height: 4px;
-      transform: translateY(-50%);
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      transform: translateX(-50%);
       border-radius: 2px;
       overflow: hidden;
     }
@@ -382,10 +384,10 @@
 
     .mc-thumb {
       position: absolute;
-      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
-      width: 8px;
-      height: 20px;
+      width: 20px;
+      height: 8px;
       background: var(--bg);
       border: 1.5px solid var(--text);
       pointer-events: none;
@@ -396,7 +398,7 @@
       html { font-size: 12px; }
       .page { padding: 1.5rem; max-width: 100%; }
       .hue-sliders { bottom: 1rem; right: 0.75rem; gap: 8px; }
-      .mc-slider { width: 80px; }
+      .mc-slider { height: 90px; }
       .highlight { padding-bottom: 1rem; }
     }
   </style>
@@ -538,19 +540,19 @@
     </div>
 
   <div class="hue-sliders">
-    <div class="mc-row">
-      <span class="mc-label">TEXT</span>
-      <div class="mc-slider" id="tx-slider">
-        <div class="mc-rail"><canvas id="tx-canvas"></canvas></div>
-        <div class="mc-thumb" id="tx-thumb"></div>
-      </div>
-    </div>
-    <div class="mc-row">
-      <span class="mc-label">BG</span>
+    <div class="mc-col">
       <div class="mc-slider" id="bg-slider">
         <div class="mc-rail"><canvas id="bg-canvas"></canvas></div>
         <div class="mc-thumb" id="bg-thumb"></div>
       </div>
+      <span class="mc-label">BG</span>
+    </div>
+    <div class="mc-col">
+      <div class="mc-slider" id="tx-slider">
+        <div class="mc-rail"><canvas id="tx-canvas"></canvas></div>
+        <div class="mc-thumb" id="tx-thumb"></div>
+      </div>
+      <span class="mc-label">TEXT</span>
     </div>
   </div>
 
@@ -609,11 +611,11 @@
         drawRail('bg-canvas', bgColor);
       }
 
-      // Position thumbs
+      // Position thumbs (vertical — top=0, bottom=1)
       function updateThumb(thumbId, sliderId, pos) {
         var slider = document.getElementById(sliderId);
         var thumb = document.getElementById(thumbId);
-        thumb.style.left = (pos * slider.offsetWidth) + 'px';
+        thumb.style.top = (pos * slider.offsetHeight) + 'px';
       }
 
       function updateAllThumbs() {
@@ -627,8 +629,8 @@
         var active = false;
         function getVal(e) {
           var rect = slider.getBoundingClientRect();
-          var cx = e.touches ? e.touches[0].clientX : e.clientX;
-          return Math.max(0, Math.min(1, (cx - rect.left) / rect.width));
+          var cy = e.touches ? e.touches[0].clientY : e.clientY;
+          return Math.max(0, Math.min(1, (cy - rect.top) / rect.height));
         }
         function start(e) { e.preventDefault(); active = true; onChange(getVal(e)); }
         function move(e) { if (!active) return; e.preventDefault(); onChange(getVal(e)); }
